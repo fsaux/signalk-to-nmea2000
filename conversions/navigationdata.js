@@ -44,24 +44,28 @@ module.exports = (app, plugin) => {
           eta.getUTCSeconds()) % 86400;
       };
 
-      return [{
-        pgn: 129284,
-        "SID" : 0x88,
-        "Distance to Waypoint" :  distToDest,
-        "Course/Bearing reference" : 0,       //True
-        "Perpendicular Crossed" : 0,          //No
-        "Arrival Circle Entered" : 0,         //No
-        "Calculation Type" : 0,               //Great Circle
-        "ETA Time" : eta === null ? undefined : etaTime,
-        "ETA Date": eta === null ? undefined : etaDate,
-        "Bearing, Origin to Destination Waypoint" : bearingOriginToDest,
-        "Bearing, Position to Destination Waypoint" : bearingToDest,
-        "Origin Waypoint Number" : undefined,
-        "Destination Waypoint Number" : undefined,
-        "Destination Latitude" : dest === null ? undefined : dest.latitude,
-        "Destination Longitude" : dest === null ? undefined : dest.longitude,
-        "Waypoint Closing Velocity" : vmg,
-      }]
+      try {
+        return [{
+          pgn: 129284,
+          "SID": 0x88,
+          "Distance to Waypoint": distToDest,
+          "Course/Bearing reference": 0,       //True
+          "Perpendicular Crossed": 0,          //No
+          "Arrival Circle Entered": 0,         //No
+          "Calculation Type": 0,               //Great Circle
+          "ETA Time": etaTime,
+          "ETA Date": etaDate,
+          "Bearing, Origin to Destination Waypoint": bearingOriginToDest,
+          "Bearing, Position to Destination Waypoint": bearingToDest,
+          "Origin Waypoint Number": undefined,
+          "Destination Waypoint Number": undefined,
+          "Destination Latitude": dest === null ? undefined : dest.latitude,
+          "Destination Longitude": dest === null ? undefined : dest.longitude,
+          "Waypoint Closing Velocity": vmg,
+        }]
+      } catch (err) {
+        console.error(err)
+      }
     }
   }]
 }
