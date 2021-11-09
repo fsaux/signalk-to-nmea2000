@@ -18,44 +18,49 @@ module.exports = (app, plugin) => {
     title: 'Navigation Data (129284)',
     optionKey: 'navigationdata',
     keys: [
-      'navigation.courseRhumbline.nextPoint.distance',
-      'navigation.courseRhumbline.bearingToDestinationTrue',
-      'navigation.courseRhumbline.bearingOriginToDestinationTrue',
-      'navigation.courseRhumbline.nextPoint',
-      'navigation.courseRhumbline.nextPoint.velocityMadeGood',
-      'notifications.arrivalCircleEntered',
-      'notifications.perpendicularPassed',
-      'navigation.courseRhumbline.nextPoint.ID'
+      'navigation.courseGreatCircle.nextPoint.distance',
+      'navigation.courseGreatCircle.nextPoint.bearingTrue',
+      'navigation.courseGreatCircle.nextPoint.estimatedTimeOfArrival',
+      'navigation.courseGreatCircle.bearingTrackTrue',
+      'navigation.courseGreatCircle.nextPoint.position',
+      'navigation.courseGreatCircle.nextPoint.velocityMadeGood'
     ],
     timeouts: [
-      10000, 10000, 10000, 10000, 10000, undefined, undefined, 10000
+      10000, 10000, 10000, 10000, 30000, 10000
     ],
-    callback: (distToDest, bearingToDest, bearingOriginToDest, dest, WCV, ace, pp, wpid) => {
-      var dateObj = new Date();
-      var secondsToGo = Math.trunc(distToDest / WCV);
-      var etaDate = Math.trunc((dateObj.getTime() / 1000 + secondsToGo) / 86400);
-      var etaTime = (dateObj.getUTCHours() * (60 * 60) +
-                     dateObj.getUTCMinutes() * 60 +
-                     dateObj.getUTCSeconds() +
-                     secondsToGo) % 86400;
+    callback: (distToDest, bearingToDest, eta, bearingOriginToDest, dest, vmg) => {
+      
+      /*app.debug(dest);
+      app.debug(distToDest);
+      app.debug(bearingToDest);
+      app.debug(eta);
+      app.debug(bearingOriginToDest);
+      app.debug(vmg);*/
+
+      if (eta !== null) {
+        var etaDate = Math.trunc((eta.getTime() / 1000) / 86400);
+        var etaTime = (eta.getUTCHours() * (60 * 60) +
+          eta.getUTCMinutes() * 60 +
+          eta.getUTCSeconds()) % 86400;
+      };
 
       return [{
         pgn: 129284,
         "SID" : 0x88,
         "Distance to Waypoint" :  distToDest,
-        "Course/Bearing reference" : 0,
-        "Perpendicular Crossed" : pp != null,
-        "Arrival Circle Entered" : ace != null,
-        "Calculation Type" : 1,
-        "ETA Time" : (WCV > 0) ? etaTime : undefined,
-        "ETA Date": (WCV > 0) ? etaDate : undefined,
+        "Course/Bearing reference" : 0,       //True
+        "Perpendicular Crossed" : 0,          //No
+        "Arrival Circle Entered" : 0,         //No
+        "Calculation Type" : 0,               //Great Circle
+        "ETA Time" : eta === null ? undefined : etaTime,
+        "ETA Date": eta === null ? undefined : etaDate,
         "Bearing, Origin to Destination Waypoint" : bearingOriginToDest,
         "Bearing, Position to Destination Waypoint" : bearingToDest,
         "Origin Waypoint Number" : undefined,
-        "Destination Waypoint Number" : parseInt(wpid),
-        "Destination Latitude" : dest.latitude,
-        "Destination Longitude" : dest.longitude,
-        "Waypoint Closing Velocity" : WCV,
+        "Destination Waypoint Number" : undefined,
+        "Destination Latitude" : dest === null ? undefined : dest.latitude,
+        "Destination Longitude" : dest === null ? undefined : dest.longitude,
+        "Waypoint Closing Velocity" : vmg,
       }]
     }
   }]
