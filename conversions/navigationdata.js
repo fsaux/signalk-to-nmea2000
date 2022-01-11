@@ -50,8 +50,8 @@ module.exports = (app, plugin) => {
           "SID": 0x88,
           "Distance to Waypoint": distToDest,
           "Course/Bearing reference": 0,       //True
-          "Perpendicular Crossed": 0,          //No
-          "Arrival Circle Entered": 0,         //No
+          "Perpendicular Crossed": undefined,          //No
+          "Arrival Circle Entered": undefined,         //No
           "Calculation Type": 0,               //Great Circle
           "ETA Time": etaTime,
           "ETA Date": etaDate,
@@ -61,7 +61,7 @@ module.exports = (app, plugin) => {
           "Destination Waypoint Number": undefined,
           "Destination Latitude": dest === null ? undefined : dest.latitude,
           "Destination Longitude": dest === null ? undefined : dest.longitude,
-          "Waypoint Closing Velocity": vmg,
+          "Waypoint Closing Velocity": vmg
         }]
       } catch (err) {
         console.error(err)
